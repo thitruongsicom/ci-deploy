@@ -1,0 +1,35 @@
+image: docker:stable
+
+stages:
+  - php72
+  - push72
+  - php73
+  - push73
+
+docker:build:
+  stage: php72
+  script:
+  - docker info
+  - make build72
+
+docker:build:
+  stage: php73
+  script:
+  - docker info
+  - make build73
+
+docker:push:
+  stage: push72
+  only:
+  - master
+  script:
+  - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin
+  - docker push thitruongsi/ci-deploy:php72
+
+docker:push:
+  stage: push73
+  only:
+  - master
+  script:
+  - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin
+  - docker push thitruongsi/ci-deploy:php73
